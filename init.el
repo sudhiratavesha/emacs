@@ -5,6 +5,9 @@
 ;; MELPA Package Support
 ;; ===================================
 
+;; Add custom directory to load path
+;; (add-to-list 'load-path "custom load path")
+
 ;; Enables basic packaging support
 
 (require 'package)
@@ -21,6 +24,8 @@
 ;; If there are no archived package contents, refresh them
 (when (not package-archive-contents)
   (package-refresh-contents))
+
+(set-fringe-mode 15)
 
 ;; Installs packages
 ;;
@@ -63,6 +68,12 @@
 (add-hook 'text-mode-hook 'flyspell-mode)
 (add-hook 'org-mode-hook 'flyspell-mode)
 
+;; Display full path to visited file in frame title
+(setq frame-title-format
+      '((:eval (if (buffer-file-name)
+                   (abbreviate-file-name (buffer-file-name))
+                 "%b"))))
+
 ;; ============================================================================
 ;; Org mode Setup
 ;; ============================================================================
@@ -71,7 +82,7 @@
 (add-hook 'org-mode-hook '(lambda () (setq fill-column 80)))
 (add-hook 'org-mode-hook 'turn-on-auto-fill)
 ;; auto new line
-;; Increases size of LaTeX fraegment previews
+;; Increases size of LaTeX fragment previews
 (plist-put org-format-latex-options :scale 2)
 ;;;
 ;;; ox-hugo settings
@@ -84,8 +95,11 @@
 ;;;
 ;; Functions to create source, verse, quote and center blocks
 (defun add-src-elements (src-lang)
-  "Make adding #+BEGIN/END _SRC elements easier"
-  (interactive "sEnter source lang:")
+  "
+   Make adding #+BEGIN/END _SRC elements easier.
+    C-c ' to edit source in a separate frame
+  "
+  (interactive "sEnter source language:")
   (save-excursion
     (insert (format "#+BEGIN_SRC %s\n" src-lang))
     (newline-and-indent)
@@ -110,7 +124,7 @@
   "Make adding #+BEGIN/END _CENTER elements easier"
   (interactive)
   (save-excursion
-er    (insert "#+BEGIN_CENTER\n\n#+END_CENTER"))
+    (insert "#+BEGIN_CENTER\n\n#+END_CENTER"))
   (forward-line 1))
 
 ;; set it to keybindings
@@ -231,7 +245,7 @@ er    (insert "#+BEGIN_CENTER\n\n#+END_CENTER"))
   (setq lsp-enable-which-key-integration t)
   (setq highlight-indent-guides-method 'character)
   :bind (:map lsp-mode-map
-	      ("C-c d" .  lsp-describe-thing-at-point)
+	      ("C-." .  lsp-describe-thing-at-point)
 	      ("C-c c" . comment-region)
 	      ("C-c u" . uncomment-region)))
 
